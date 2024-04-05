@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package product;
+
+service ProductService {
+  rpc findOneProduct(findOneProductDto) returns (Product);
+  rpc GetAllProducts(Empty) returns (Products);
+  rpc CreateProduct(CreateProductDto) returns (Product);
+  rpc UpdateProduct(Product) returns (Product);
+  rpc DeleteProduct(findOneProductDto) returns (Product);
+  rpc QueryProducts (stream PaginationDto) returns (stream Products);
+}
+
+message PaginationDto {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message Empty {}
+
+message findOneProductDto {
+  string id = 1;
+}
+
+message CreateProductDto {
+  string name = 1;
+  string description = 2;
+  float price = 3;
+}
+
+message Products {
+  repeated Product products = 1;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+}
