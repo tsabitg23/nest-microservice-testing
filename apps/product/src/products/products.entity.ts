@@ -2,7 +2,7 @@ import { Entity, Column } from 'typeorm';
 import { BaseEntityDto } from '@app/common';
 
 @Entity({ name: 'product' })
-export class Product extends BaseEntityDto {
+export class ProductEntity extends BaseEntityDto {
   @Column({ type: 'varchar' })
   name: string;
 

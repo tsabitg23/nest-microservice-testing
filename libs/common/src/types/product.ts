@@ -18,6 +18,14 @@ export interface CreateProductDto {
   stock: number;
 }
 
+export interface UpdateProductDto {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+}
+
 export interface Products {
   products: Product[];
 }
@@ -28,6 +36,9 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const PRODUCT_PACKAGE_NAME = "product";
@@ -39,7 +50,7 @@ export interface ProductServiceClient {
 
   createProduct(request: CreateProductDto): Observable<Product>;
 
-  updateProduct(request: Product): Observable<Product>;
+  updateProduct(request: UpdateProductDto): Observable<Product>;
 
   deleteProduct(request: FindOneProductDto): Observable<Product>;
 }
@@ -51,7 +62,7 @@ export interface ProductServiceController {
 
   createProduct(request: CreateProductDto): Promise<Product> | Observable<Product> | Product;
 
-  updateProduct(request: Product): Promise<Product> | Observable<Product> | Product;
+  updateProduct(request: UpdateProductDto): Promise<Product> | Observable<Product> | Product;
 
   deleteProduct(request: FindOneProductDto): Promise<Product> | Observable<Product> | Product;
 }

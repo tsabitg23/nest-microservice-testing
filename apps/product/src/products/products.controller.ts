@@ -4,18 +4,20 @@ import {
   CreateProductDto,
   FindOneProductDto,
   Product,
+  Products,
   ProductServiceController,
+  UpdateProductDto,
 } from '@app/common';
 
 @Controller()
 export class ProductsController implements ProductServiceController {
   constructor(private readonly productsService: ProductsService) {}
 
-  createProduct(createProductDto: CreateProductDto) {
+  createProduct(createProductDto: CreateProductDto): Promise<Product> {
     return this.productsService.create(createProductDto);
   }
 
-  findAllProducts() {
+  async findAllProducts(): Promise<Products> {
     return this.productsService.findAll();
   }
 
@@ -23,11 +25,11 @@ export class ProductsController implements ProductServiceController {
     return this.productsService.findOne(findOneProductDto.id);
   }
 
-  updateProduct(updateProductDto: Product) {
+  updateProduct(updateProductDto: UpdateProductDto): Promise<Product> {
     return this.productsService.update(updateProductDto.id, updateProductDto);
   }
 
-  deleteProduct(request: FindOneProductDto) {
+  deleteProduct(request: FindOneProductDto): Promise<Product> {
     return this.productsService.remove(request.id);
   }
 }

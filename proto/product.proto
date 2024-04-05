@@ -6,7 +6,7 @@ service ProductService {
   rpc FindOneProduct(FindOneProductDto) returns (Product);
   rpc FindAllProducts(Empty) returns (Products);
   rpc CreateProduct(CreateProductDto) returns (Product);
-  rpc UpdateProduct(Product) returns (Product);
+  rpc UpdateProduct(UpdateProductDto) returns (Product);
   rpc DeleteProduct(FindOneProductDto) returns (Product);
 }
 
@@ -23,6 +23,14 @@ message CreateProductDto {
   int32 stock = 4;
 }
 
+message UpdateProductDto {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+  int32 stock = 5;
+}
+
 message Products {
   repeated Product products = 1;
 }
@@ -33,4 +41,7 @@ message Product {
   string description = 3;
   float price = 4;
   int32 stock = 5;
+  bool isArchived = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
 }
