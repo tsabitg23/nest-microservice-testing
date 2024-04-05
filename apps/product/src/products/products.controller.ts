@@ -1,35 +1,33 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import {
+  CreateProductDto,
+  FindOneProductDto,
+  Product,
+  ProductServiceController,
+} from '@app/common';
 
 @Controller()
-export class ProductsController {
+export class ProductsController implements ProductServiceController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @MessagePattern('createProduct')
-  create(@Payload() createProductDto: CreateProductDto) {
+  createProduct(createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
-  @MessagePattern('findAllProducts')
-  findAll() {
+  findAllProducts() {
     return this.productsService.findAll();
   }
 
-  @MessagePattern('findOneProduct')
-  findOne(@Payload() id: number) {
-    return this.productsService.findOne(id);
+  findOneProduct(findOneProductDto: FindOneProductDto) {
+    return this.productsService.findOne(findOneProductDto.id);
   }
 
-  @MessagePattern('updateProduct')
-  update(@Payload() updateProductDto: UpdateProductDto) {
+  updateProduct(updateProductDto: Product) {
     return this.productsService.update(updateProductDto.id, updateProductDto);
   }
 
-  @MessagePattern('removeProduct')
-  remove(@Payload() id: number) {
-    return this.productsService.remove(id);
+  deleteProduct(request: FindOneProductDto) {
+    return this.productsService.remove(request.id);
   }
 }

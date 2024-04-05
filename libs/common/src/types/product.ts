@@ -4,15 +4,10 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "product";
 
-export interface PaginationDto {
-  page: number;
-  limit: number;
-}
-
 export interface Empty {
 }
 
-export interface findOneProductDto {
+export interface FindOneProductDto {
   id: string;
 }
 
@@ -20,6 +15,7 @@ export interface CreateProductDto {
   name: string;
   description: string;
   price: number;
+  stock: number;
 }
 
 export interface Products {
@@ -31,43 +27,40 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  stock: number;
 }
 
 export const PRODUCT_PACKAGE_NAME = "product";
 
 export interface ProductServiceClient {
-  findOneProduct(request: findOneProductDto): Observable<Product>;
+  findOneProduct(request: FindOneProductDto): Observable<Product>;
 
-  getAllProducts(request: Empty): Observable<Products>;
+  findAllProducts(request: Empty): Observable<Products>;
 
   createProduct(request: CreateProductDto): Observable<Product>;
 
   updateProduct(request: Product): Observable<Product>;
 
-  deleteProduct(request: findOneProductDto): Observable<Product>;
-
-  queryProducts(request: Observable<PaginationDto>): Observable<Products>;
+  deleteProduct(request: FindOneProductDto): Observable<Product>;
 }
 
 export interface ProductServiceController {
-  findOneProduct(request: findOneProductDto): Promise<Product> | Observable<Product> | Product;
+  findOneProduct(request: FindOneProductDto): Promise<Product> | Observable<Product> | Product;
 
-  getAllProducts(request: Empty): Promise<Products> | Observable<Products> | Products;
+  findAllProducts(request: Empty): Promise<Products> | Observable<Products> | Products;
 
   createProduct(request: CreateProductDto): Promise<Product> | Observable<Product> | Product;
 
   updateProduct(request: Product): Promise<Product> | Observable<Product> | Product;
 
-  deleteProduct(request: findOneProductDto): Promise<Product> | Observable<Product> | Product;
-
-  queryProducts(request: Observable<PaginationDto>): Observable<Products>;
+  deleteProduct(request: FindOneProductDto): Promise<Product> | Observable<Product> | Product;
 }
 
 export function ProductServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
       "findOneProduct",
-      "getAllProducts",
+      "findAllProducts",
       "createProduct",
       "updateProduct",
       "deleteProduct",
@@ -76,7 +69,7 @@ export function ProductServiceControllerMethods() {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("ProductService", method)(constructor.prototype[method], method, descriptor);
     }
-    const grpcStreamMethods: string[] = ["queryProducts"];
+    const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcStreamMethod("ProductService", method)(constructor.prototype[method], method, descriptor);
