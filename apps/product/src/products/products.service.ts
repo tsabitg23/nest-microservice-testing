@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto, Product } from '@app/common';
+import { InjectRepository } from "@nestjs/typeorm";
 
 @Injectable()
 export class ProductsService {
+  constructor(
+    @InjectRepository(Product) private productRepository: Repository<Product>,
+  ) {}
   create(createProductDto: CreateProductDto) {
     return 'This action adds a new product';
   }
