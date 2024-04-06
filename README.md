@@ -25,6 +25,13 @@ $ yarn start auth # Run auth service
 $ cd apps/api-gateway && make server
 ```
 
+## Run using docker compose
+1. Copy all .env.example in `infra/` folder to .env (e.g. auth.env.example to auth.env) and adjust the config accordingly
+2. Run following command
+```bash
+docker compose up -d 
+```
+
 ## Regenerate Proto
 ```bash
 # For NestJS typescript

@@ -1,0 +1,74 @@
+version: "3"
+services:
+  auth:
+    container_name: auth
+    build:
+      context: .
+      dockerfile: infra/node.Dockerfile
+      args:
+        - APP=auth
+    restart: always
+    ports:
+      - 5002:5002
+    env_file:
+      - infra/env/auth.env
+    networks:
+      apps:
+        aliases:
+          - auth
+  product:
+    container_name: product
+    build:
+      context: .
+      dockerfile: infra/node.Dockerfile
+      args:
+        - APP=product
+    restart: always
+    ports:
+      - 5001:5001
+    env_file:
+      - infra/env/product.env
+    networks:
+      apps:
+        aliases:
+          - product
+  order:
+    container_name: order
+    build:
+      context: .
+      dockerfile: infra/node.Dockerfile
+      args:
+        - APP=order
+    restart: always
+    ports:
+      - 5000:5000
+    env_file:
+      - infra/env/order.env
+    networks:
+      apps:
+        aliases:
+          - order
+
+  api_gateway:
+    container_name: api_gateway
+    build:
+      context: apps/api-gateway
+      dockerfile: ../../infra/go.Dockerfile
+      args:
+        - APP=api_gateway
+    restart: always
+    ports:
+      - 3000:3000
+    env_file:
+      - infra/env/api_gateway.env
+    networks:
+      apps:
+        aliases:
+          - api_gateway
+    depends_on:
+      - auth
+      - product
+      - order
+
+networks:
+  apps:
