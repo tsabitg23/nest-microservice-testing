@@ -15,7 +15,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build -o /main cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /main main.go
 RUN touch /.env
 #
 #RUN ["ls", "/"]

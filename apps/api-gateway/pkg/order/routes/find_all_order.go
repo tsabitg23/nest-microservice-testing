@@ -8,6 +8,15 @@ import (
 	"github.com/tsabitg23/go-grpc-api-gateway/pkg/order/pb"
 )
 
+// @Summary find all orders
+// @Schemes
+// @Description find all orders
+// @Tags order
+// @Accept json
+// @Produce json
+// @Success 200 {object} pb.GetAllOrderResponse
+// @Failure 400 {object} pb.GetAllOrderResponse
+// @Router /order [get]
 func FindAllOrders(ctx *gin.Context, c pb.OrderServiceClient) {
 
 	res, err := c.GetAllOrders(context.Background(), &pb.GetAllOrderDto{})

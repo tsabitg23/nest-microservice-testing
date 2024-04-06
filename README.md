@@ -51,9 +51,9 @@ $ cd apps/api-gateway && maker proto
 ## Documentation
 Postman collection can be obtain in `postman/` folders and can be imported into postman app.
 
-API documentation using Swagger can be accessed after running the application with the link below
+API documentation using Swagger can be accessed after running the `api_gateway` in the link below
 
 ```bash
-http://localhost:{PORT}/docs
+http://localhost:{PORT}/swagger/index.html
 # Default port is 3000
 ```

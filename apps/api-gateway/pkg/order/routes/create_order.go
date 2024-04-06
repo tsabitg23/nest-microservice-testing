@@ -8,6 +8,17 @@ import (
 	"github.com/tsabitg23/go-grpc-api-gateway/pkg/order/pb"
 )
 
+// @Summary create order
+// @Schemes
+// @Description create new order
+// @Tags order
+// @Accept json
+// @Produce json
+// @Param body body pb.CreateOrderDto true "Create Order Request"
+// @Success 201 {object} pb.CreateOrderResponse
+// @Failure 400 {object} pb.CreateOrderResponse
+// @Failure 404 {object} pb.CreateOrderResponse
+// @Router /order [post]
 func CreateOrder(ctx *gin.Context, c pb.OrderServiceClient) {
 	body := pb.CreateOrderDto{}
 

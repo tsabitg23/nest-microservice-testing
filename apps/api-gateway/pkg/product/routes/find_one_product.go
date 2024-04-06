@@ -8,6 +8,16 @@ import (
 	"github.com/tsabitg23/go-grpc-api-gateway/pkg/product/pb"
 )
 
+// @Summary find one product
+// @Schemes
+// @Description find one product by id
+// @Tags product
+// @Accept json
+// @Produce json
+// @Param id path string true "Product ID"
+// @Success 200 {object} pb.FindOneProductResponse
+// @Failure 404 {object} pb.FindOneProductResponse
+// @Router /product/{id} [get]
 func FindOneProduct(ctx *gin.Context, c pb.ProductServiceClient) {
 
 	res, err := c.FindOneProduct(context.Background(), &pb.FindOneProductDto{

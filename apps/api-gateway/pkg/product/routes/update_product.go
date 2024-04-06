@@ -8,6 +8,17 @@ import (
 	"github.com/tsabitg23/go-grpc-api-gateway/pkg/product/pb"
 )
 
+// @Summary update product
+// @Schemes
+// @Description update product by id
+// @Tags product
+// @Accept json
+// @Produce json
+// @Param id path string true "Product ID"
+// @Param body body pb.UpdateProductDto true "Update Product Request"
+// @Success 200 {object} pb.UpdateProductResponse
+// @Failure 400 {object} pb.UpdateProductResponse
+// @Router /product/{id} [put]
 func UpdateProduct(ctx *gin.Context, c pb.ProductServiceClient) {
 	body := pb.UpdateProductDto{}
 

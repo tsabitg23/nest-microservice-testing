@@ -8,6 +8,16 @@ import (
 	"github.com/tsabitg23/go-grpc-api-gateway/pkg/product/pb"
 )
 
+// @Summary create product
+// @Schemes
+// @Description create new product
+// @Tags product
+// @Accept json
+// @Produce json
+// @Param body body pb.CreateProductDto true "Create Product Request"
+// @Success 201 {object} pb.CreateProductResponse
+// @Failure 400 {object} pb.CreateProductResponse
+// @Router /product [post]
 func CreateProduct(ctx *gin.Context, c pb.ProductServiceClient) {
 	body := pb.CreateProductDto{}
 

@@ -13,6 +13,16 @@ type LoginRequestBody struct {
 	Password string `json:"password"`
 }
 
+// @Summary login user
+// @Schemes
+// @Description login to get access token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body LoginRequestBody true "Login Request"
+// @Success 200 {object} pb.LoginResponse
+// @Failure 400 {object} pb.LoginResponse
+// @Router /login [post]
 func Login(ctx *gin.Context, c pb.AuthServiceClient) {
 	b := LoginRequestBody{}
 

@@ -1,0 +1,415 @@
+basePath: /api
+definitions:
+  pb.CreateOrderDto:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/pb.CreateOrderProductsDto'
+        type: array
+      userId:
+        type: string
+    type: object
+  pb.CreateOrderProductsDto:
+    properties:
+      productId:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  pb.CreateOrderResponse:
+    properties:
+      error:
+        type: string
+      orderId:
+        type: string
+      status:
+        type: integer
+    type: object
+  pb.CreateProductDto:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
+  pb.CreateProductResponse:
+    properties:
+      error:
+        type: string
+      productId:
+        type: string
+      status:
+        type: integer
+    type: object
+  pb.DeleteProductResponse:
+    properties:
+      error:
+        type: string
+      productId:
+        type: string
+      status:
+        type: integer
+    type: object
+  pb.FindAllProductsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/pb.Product'
+        type: array
+      error:
+        type: string
+      status:
+        type: integer
+    type: object
+  pb.FindOneProductResponse:
+    properties:
+      data:
+        $ref: '#/definitions/pb.Product'
+      error:
+        type: string
+      status:
+        type: integer
+    type: object
+  pb.GetAllOrderResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/pb.Order'
+        type: array
+      error:
+        type: string
+      status:
+        type: integer
+    type: object
+  pb.LoginResponse:
+    properties:
+      error:
+        type: string
+      status:
+        type: integer
+      token:
+        type: string
+    type: object
+  pb.Order:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      isArchived:
+        type: boolean
+      orderProducts:
+        items:
+          $ref: '#/definitions/pb.OrderProducts'
+        type: array
+      totalPrice:
+        type: number
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    type: object
+  pb.OrderProducts:
+    properties:
+      price:
+        type: number
+      productId:
+        type: string
+      quantity:
+        type: integer
+    type: object
+  pb.Product:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      isArchived:
+        type: boolean
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  pb.RegisterResponse:
+    properties:
+      error:
+        type: string
+      status:
+        type: integer
+    type: object
+  pb.UpdateProductDto:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
+  pb.UpdateProductResponse:
+    properties:
+      error:
+        type: string
+      productId:
+        type: string
+      status:
+        type: integer
+    type: object
+  routes.LoginRequestBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  routes.RegisterRequestBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: login to get access token
+      parameters:
+      - description: Login Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/routes.LoginRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.LoginResponse'
+      summary: login user
+      tags:
+      - auth
+  /order:
+    get:
+      consumes:
+      - application/json
+      description: find all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GetAllOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.GetAllOrderResponse'
+      summary: find all orders
+      tags:
+      - order
+    post:
+      consumes:
+      - application/json
+      description: create new order
+      parameters:
+      - description: Create Order Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateOrderDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/pb.CreateOrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.CreateOrderResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/pb.CreateOrderResponse'
+      summary: create order
+      tags:
+      - order
+  /product:
+    get:
+      consumes:
+      - application/json
+      description: find all products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.FindAllProductsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.FindAllProductsResponse'
+      summary: find all products
+      tags:
+      - product
+    post:
+      consumes:
+      - application/json
+      description: create new product
+      parameters:
+      - description: Create Product Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.CreateProductDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/pb.CreateProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.CreateProductResponse'
+      summary: create product
+      tags:
+      - product
+  /product/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete product by id
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.DeleteProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.DeleteProductResponse'
+      summary: delete product
+      tags:
+      - product
+    get:
+      consumes:
+      - application/json
+      description: find one product by id
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.FindOneProductResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/pb.FindOneProductResponse'
+      summary: find one product
+      tags:
+      - product
+    put:
+      consumes:
+      - application/json
+      description: update product by id
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Product Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/pb.UpdateProductDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.UpdateProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.UpdateProductResponse'
+      summary: update product
+      tags:
+      - product
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: register new user for authentication
+      parameters:
+      - description: Register Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/routes.RegisterRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/pb.RegisterResponse'
+      summary: register user
+      tags:
+      - auth
+swagger: "2.0"

@@ -14,6 +14,16 @@ type RegisterRequestBody struct {
 	Role     string `json:"role"`
 }
 
+// @Summary register user
+// @Schemes
+// @Description register new user for authentication
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body RegisterRequestBody true "Register Request"
+// @Success 200 {object} pb.RegisterResponse
+// @Failure 400 {object} pb.RegisterResponse
+// @Router /register [post]
 func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 	b := RegisterRequestBody{}
 
