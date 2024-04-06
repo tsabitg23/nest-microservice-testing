@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tsabitg23/go-grpc-api-gateway/pkg/auth"
 	"github.com/tsabitg23/go-grpc-api-gateway/pkg/config"
-	// "github.com/tsabitg23/go-grpc-api-gateway/pkg/product"
+	"github.com/tsabitg23/go-grpc-api-gateway/pkg/product"
 )
 
 func main() {
@@ -18,9 +18,8 @@ func main() {
 
 	r := gin.Default()
 
-	auth.RegisterRoutes(r, &c)
-	// authSvc := *auth.RegisterRoutes(r, &c)
-	// product.RegisterRoutes(r, &c, &authSvc)
+	authSvc := *auth.RegisterRoutes(r, &c)
+	product.RegisterRoutes(r, &c, &authSvc)
 	// order.RegisterRoutes(r, &c, &authSvc)
 
 	r.Run(c.Port)
