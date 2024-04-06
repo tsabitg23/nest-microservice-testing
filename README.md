@@ -7,6 +7,13 @@ This project is used as assignment for hiring process. This will be the API gate
 - Product
 - Order
 
+## Dependencies
+Have to be already installed
+- Docker
+- NodeJS
+- Golang
+- Postgresql
+
 ## Installation
 
 ```bash
