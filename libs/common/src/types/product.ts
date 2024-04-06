@@ -11,11 +11,29 @@ export interface FindOneProductDto {
   id: string;
 }
 
+export interface FindOneProductResponse {
+  data: Product | undefined;
+  status: number;
+  error: string;
+}
+
+export interface FindAllProductsResponse {
+  data: Product[];
+  status: number;
+  error: string;
+}
+
 export interface CreateProductDto {
   name: string;
   description: string;
   price: number;
   stock: number;
+}
+
+export interface CreateProductResponse {
+  productId: string;
+  status: number;
+  error: string;
 }
 
 export interface UpdateProductDto {
@@ -26,13 +44,27 @@ export interface UpdateProductDto {
   stock: number;
 }
 
+export interface UpdateProductResponse {
+  productId: string;
+  status: number;
+  error: string;
+}
+
 export interface DecreaseProductDto {
   id: string;
   quantity: number;
 }
 
-export interface Products {
-  data: Product[];
+export interface DecreaseProductResponse {
+  productId: string;
+  status: number;
+  error: string;
+}
+
+export interface DeleteProductResponse {
+  productId: string;
+  status: number;
+  error: string;
 }
 
 export interface Product {
@@ -49,31 +81,43 @@ export interface Product {
 export const PRODUCT_PACKAGE_NAME = "product";
 
 export interface ProductServiceClient {
-  findOneProduct(request: FindOneProductDto): Observable<Product>;
+  findOneProduct(request: FindOneProductDto): Observable<FindOneProductResponse>;
 
-  findAllProducts(request: Empty): Observable<Products>;
+  findAllProducts(request: Empty): Observable<FindAllProductsResponse>;
 
-  createProduct(request: CreateProductDto): Observable<Product>;
+  createProduct(request: CreateProductDto): Observable<CreateProductResponse>;
 
-  updateProduct(request: UpdateProductDto): Observable<Product>;
+  updateProduct(request: UpdateProductDto): Observable<UpdateProductResponse>;
 
-  deleteProduct(request: FindOneProductDto): Observable<Product>;
+  deleteProduct(request: FindOneProductDto): Observable<DeleteProductResponse>;
 
-  decreaseStock(request: DecreaseProductDto): Observable<Product>;
+  decreaseStock(request: DecreaseProductDto): Observable<DecreaseProductResponse>;
 }
 
 export interface ProductServiceController {
-  findOneProduct(request: FindOneProductDto): Promise<Product> | Observable<Product> | Product;
+  findOneProduct(
+    request: FindOneProductDto,
+  ): Promise<FindOneProductResponse> | Observable<FindOneProductResponse> | FindOneProductResponse;
 
-  findAllProducts(request: Empty): Promise<Products> | Observable<Products> | Products;
+  findAllProducts(
+    request: Empty,
+  ): Promise<FindAllProductsResponse> | Observable<FindAllProductsResponse> | FindAllProductsResponse;
 
-  createProduct(request: CreateProductDto): Promise<Product> | Observable<Product> | Product;
+  createProduct(
+    request: CreateProductDto,
+  ): Promise<CreateProductResponse> | Observable<CreateProductResponse> | CreateProductResponse;
 
-  updateProduct(request: UpdateProductDto): Promise<Product> | Observable<Product> | Product;
+  updateProduct(
+    request: UpdateProductDto,
+  ): Promise<UpdateProductResponse> | Observable<UpdateProductResponse> | UpdateProductResponse;
 
-  deleteProduct(request: FindOneProductDto): Promise<Product> | Observable<Product> | Product;
+  deleteProduct(
+    request: FindOneProductDto,
+  ): Promise<DeleteProductResponse> | Observable<DeleteProductResponse> | DeleteProductResponse;
 
-  decreaseStock(request: DecreaseProductDto): Promise<Product> | Observable<Product> | Product;
+  decreaseStock(
+    request: DecreaseProductDto,
+  ): Promise<DecreaseProductResponse> | Observable<DecreaseProductResponse> | DecreaseProductResponse;
 }
 
 export function ProductServiceControllerMethods() {

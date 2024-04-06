@@ -22,12 +22,12 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductServiceClient interface {
-	FindOneProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*Product, error)
-	FindAllProducts(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Products, error)
-	CreateProduct(ctx context.Context, in *CreateProductDto, opts ...grpc.CallOption) (*Product, error)
-	UpdateProduct(ctx context.Context, in *UpdateProductDto, opts ...grpc.CallOption) (*Product, error)
-	DeleteProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*Product, error)
-	DecreaseStock(ctx context.Context, in *DecreaseProductDto, opts ...grpc.CallOption) (*Product, error)
+	FindOneProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*FindOneProductResponse, error)
+	FindAllProducts(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*FindAllProductsResponse, error)
+	CreateProduct(ctx context.Context, in *CreateProductDto, opts ...grpc.CallOption) (*CreateProductResponse, error)
+	UpdateProduct(ctx context.Context, in *UpdateProductDto, opts ...grpc.CallOption) (*UpdateProductResponse, error)
+	DeleteProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*DeleteProductResponse, error)
+	DecreaseStock(ctx context.Context, in *DecreaseProductDto, opts ...grpc.CallOption) (*DecreaseProductResponse, error)
 }
 
 type productServiceClient struct {
@@ -38,8 +38,8 @@ func NewProductServiceClient(cc grpc.ClientConnInterface) ProductServiceClient {
 	return &productServiceClient{cc}
 }
 
-func (c *productServiceClient) FindOneProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*Product, error) {
-	out := new(Product)
+func (c *productServiceClient) FindOneProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*FindOneProductResponse, error) {
+	out := new(FindOneProductResponse)
 	err := c.cc.Invoke(ctx, "/product.ProductService/FindOneProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -47,8 +47,8 @@ func (c *productServiceClient) FindOneProduct(ctx context.Context, in *FindOnePr
 	return out, nil
 }
 
-func (c *productServiceClient) FindAllProducts(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Products, error) {
-	out := new(Products)
+func (c *productServiceClient) FindAllProducts(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*FindAllProductsResponse, error) {
+	out := new(FindAllProductsResponse)
 	err := c.cc.Invoke(ctx, "/product.ProductService/FindAllProducts", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,8 @@ func (c *productServiceClient) FindAllProducts(ctx context.Context, in *Empty, o
 	return out, nil
 }
 
-func (c *productServiceClient) CreateProduct(ctx context.Context, in *CreateProductDto, opts ...grpc.CallOption) (*Product, error) {
-	out := new(Product)
+func (c *productServiceClient) CreateProduct(ctx context.Context, in *CreateProductDto, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	out := new(CreateProductResponse)
 	err := c.cc.Invoke(ctx, "/product.ProductService/CreateProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -65,8 +65,8 @@ func (c *productServiceClient) CreateProduct(ctx context.Context, in *CreateProd
 	return out, nil
 }
 
-func (c *productServiceClient) UpdateProduct(ctx context.Context, in *UpdateProductDto, opts ...grpc.CallOption) (*Product, error) {
-	out := new(Product)
+func (c *productServiceClient) UpdateProduct(ctx context.Context, in *UpdateProductDto, opts ...grpc.CallOption) (*UpdateProductResponse, error) {
+	out := new(UpdateProductResponse)
 	err := c.cc.Invoke(ctx, "/product.ProductService/UpdateProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -74,8 +74,8 @@ func (c *productServiceClient) UpdateProduct(ctx context.Context, in *UpdateProd
 	return out, nil
 }
 
-func (c *productServiceClient) DeleteProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*Product, error) {
-	out := new(Product)
+func (c *productServiceClient) DeleteProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*DeleteProductResponse, error) {
+	out := new(DeleteProductResponse)
 	err := c.cc.Invoke(ctx, "/product.ProductService/DeleteProduct", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -83,8 +83,8 @@ func (c *productServiceClient) DeleteProduct(ctx context.Context, in *FindOnePro
 	return out, nil
 }
 
-func (c *productServiceClient) DecreaseStock(ctx context.Context, in *DecreaseProductDto, opts ...grpc.CallOption) (*Product, error) {
-	out := new(Product)
+func (c *productServiceClient) DecreaseStock(ctx context.Context, in *DecreaseProductDto, opts ...grpc.CallOption) (*DecreaseProductResponse, error) {
+	out := new(DecreaseProductResponse)
 	err := c.cc.Invoke(ctx, "/product.ProductService/DecreaseStock", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -96,12 +96,12 @@ func (c *productServiceClient) DecreaseStock(ctx context.Context, in *DecreasePr
 // All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility
 type ProductServiceServer interface {
-	FindOneProduct(context.Context, *FindOneProductDto) (*Product, error)
-	FindAllProducts(context.Context, *Empty) (*Products, error)
-	CreateProduct(context.Context, *CreateProductDto) (*Product, error)
-	UpdateProduct(context.Context, *UpdateProductDto) (*Product, error)
-	DeleteProduct(context.Context, *FindOneProductDto) (*Product, error)
-	DecreaseStock(context.Context, *DecreaseProductDto) (*Product, error)
+	FindOneProduct(context.Context, *FindOneProductDto) (*FindOneProductResponse, error)
+	FindAllProducts(context.Context, *Empty) (*FindAllProductsResponse, error)
+	CreateProduct(context.Context, *CreateProductDto) (*CreateProductResponse, error)
+	UpdateProduct(context.Context, *UpdateProductDto) (*UpdateProductResponse, error)
+	DeleteProduct(context.Context, *FindOneProductDto) (*DeleteProductResponse, error)
+	DecreaseStock(context.Context, *DecreaseProductDto) (*DecreaseProductResponse, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -109,22 +109,22 @@ type ProductServiceServer interface {
 type UnimplementedProductServiceServer struct {
 }
 
-func (UnimplementedProductServiceServer) FindOneProduct(context.Context, *FindOneProductDto) (*Product, error) {
+func (UnimplementedProductServiceServer) FindOneProduct(context.Context, *FindOneProductDto) (*FindOneProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindOneProduct not implemented")
 }
-func (UnimplementedProductServiceServer) FindAllProducts(context.Context, *Empty) (*Products, error) {
+func (UnimplementedProductServiceServer) FindAllProducts(context.Context, *Empty) (*FindAllProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAllProducts not implemented")
 }
-func (UnimplementedProductServiceServer) CreateProduct(context.Context, *CreateProductDto) (*Product, error) {
+func (UnimplementedProductServiceServer) CreateProduct(context.Context, *CreateProductDto) (*CreateProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
 }
-func (UnimplementedProductServiceServer) UpdateProduct(context.Context, *UpdateProductDto) (*Product, error) {
+func (UnimplementedProductServiceServer) UpdateProduct(context.Context, *UpdateProductDto) (*UpdateProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
 }
-func (UnimplementedProductServiceServer) DeleteProduct(context.Context, *FindOneProductDto) (*Product, error) {
+func (UnimplementedProductServiceServer) DeleteProduct(context.Context, *FindOneProductDto) (*DeleteProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProduct not implemented")
 }
-func (UnimplementedProductServiceServer) DecreaseStock(context.Context, *DecreaseProductDto) (*Product, error) {
+func (UnimplementedProductServiceServer) DecreaseStock(context.Context, *DecreaseProductDto) (*DecreaseProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecreaseStock not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}

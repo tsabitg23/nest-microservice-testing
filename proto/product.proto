@@ -5,12 +5,12 @@ package product;
 option go_package = "/apps/api-gateway/pkg/product/pb";
 
 service ProductService {
-  rpc FindOneProduct(FindOneProductDto) returns (Product);
-  rpc FindAllProducts(Empty) returns (Products);
-  rpc CreateProduct(CreateProductDto) returns (Product);
-  rpc UpdateProduct(UpdateProductDto) returns (Product);
-  rpc DeleteProduct(FindOneProductDto) returns (Product);
-  rpc DecreaseStock(DecreaseProductDto) returns (Product);
+  rpc FindOneProduct(FindOneProductDto) returns (FindOneProductResponse);
+  rpc FindAllProducts(Empty) returns (FindAllProductsResponse);
+  rpc CreateProduct(CreateProductDto) returns (CreateProductResponse);
+  rpc UpdateProduct(UpdateProductDto) returns (UpdateProductResponse);
+  rpc DeleteProduct(FindOneProductDto) returns (DeleteProductResponse);
+  rpc DecreaseStock(DecreaseProductDto) returns (DecreaseProductResponse);
 }
 
 message Empty {}
@@ -19,11 +19,29 @@ message FindOneProductDto {
   string id = 1;
 }
 
+message FindOneProductResponse {
+  Product data = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
+message FindAllProductsResponse {
+  repeated Product data = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
 message CreateProductDto {
   string name = 1;
   string description = 2;
   float price = 3;
   int32 stock = 4;
+}
+
+message CreateProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
 }
 
 message UpdateProductDto {
@@ -34,13 +52,28 @@ message UpdateProductDto {
   int32 stock = 5;
 }
 
+message UpdateProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
 message DecreaseProductDto {
   string id = 1;
   int32 quantity = 2;
 }
 
-message Products {
-  repeated Product data = 1;
+message DecreaseProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
+message DeleteProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
+
 }
 
 message Product {

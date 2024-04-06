@@ -44,6 +44,7 @@ func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"message": "Unauthorized",
 		})
+		ctx.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 

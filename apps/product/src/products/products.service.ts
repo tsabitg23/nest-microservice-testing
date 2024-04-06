@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProductDto, DecreaseProductDto, Product, Products, UpdateProductDto } from "@app/common";
+import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateProductDto, CreateProductResponse, DecreaseProductDto, DecreaseProductResponse, DeleteProductResponse, FindAllProductsResponse, FindOneProductResponse, UpdateProductDto, UpdateProductResponse } from "@app/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductEntity } from './products.entity';
 import { Repository } from 'typeorm';
@@ -10,17 +10,25 @@ export class ProductsService {
     @InjectRepository(ProductEntity)
     private productRepository: Repository<ProductEntity>,
   ) {}
-  async create(createProductDto: CreateProductDto): Promise<Product> {
+  async create(createProductDto: CreateProductDto): Promise<CreateProductResponse> {
     const product = this.productRepository.create(createProductDto);
-    await this.productRepository.save(product);
+    try {
+      await this.productRepository.save(product);
+    } catch (e) {
+      return {
+        productId: product.id,
+        status: HttpStatus.BAD_REQUEST,
+        error: e.message || "Bad request",
+      }
+    }
     return {
-      ...product,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt && product.updatedAt.toISOString(),
+      productId: product.id,
+      status: HttpStatus.CREATED,
+      error: '',
     }
   }
 
-  async findAll(): Promise<Products> {
+  async findAll(): Promise<FindAllProductsResponse> {
     const products = await this.productRepository.find({
       where: {
         isArchived: false,
@@ -34,61 +42,124 @@ export class ProductsService {
           updatedAt: product.updatedAt && product.updatedAt.toISOString(),
         }
       }),
+      status: HttpStatus.OK,
+      error: '',
     };
   }
 
-  async findOne(id: string):Promise<Product> {
+  async findOne(id: string):Promise<FindOneProductResponse> {
     const product = await this.productRepository.findOne({
       where: {
         id,
       },
     });
 
-    return {
-      ...product,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt && product.updatedAt.toISOString(),
-    }
-  }
-
-  async update(id: string, updateProductDto: UpdateProductDto) {
-    const updatedUser = await this.productRepository.update(id, updateProductDto);
-    if(updatedUser.affected === 0) {
-      throw new NotFoundException(`Product with id ${id} not found`);
-    }
-    return this.findOne(id);
-  }
-
-  async remove(id: string) {
-    const removedUser = await this.productRepository.update(id, {
-      isArchived: true,
-    });
-    if(removedUser.affected === 0) {
-      throw new NotFoundException(`Product with id ${id} not found`);
-    }
-    return this.findOne(id);
-  }
-
-  async decreaseStock(request: DecreaseProductDto): Promise<Product> {
-    const product = await this.productRepository.findOne({
-      where: {
-        id: request.id,
-      },
-    });
     if(!product) {
-      throw new NotFoundException(`Product with id ${request.id} not found`);
+      return {
+        data: null,
+        status: HttpStatus.NOT_FOUND,
+        error: `Product with id ${id} not found`,
+      }
     }
 
-    if(product.stock - request.quantity < 0) {
-      throw new BadRequestException(`Product with id ${request.id} has insufficient stock`);
-    }
-
-    product.stock -= request.quantity;
-    await this.productRepository.save(product);
     return {
-      ...product,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt && product.updatedAt.toISOString(),
+      data: {
+        ...product,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt && product.updatedAt.toISOString(),
+      },
+      status: HttpStatus.OK,
+      error: '',
+    }
+  }
+
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<UpdateProductResponse> {
+    try {
+      const updatedUser = await this.productRepository.update(id, updateProductDto);
+      if(updatedUser.affected === 0) {
+        return {
+          productId: id,
+          status: HttpStatus.NOT_FOUND,
+          error: `Product with id ${id} not found`,
+        }
+      }
+    } catch (e) {
+      return {
+        productId: id,
+        status: HttpStatus.BAD_REQUEST,
+        error: e.message || "Bad request",
+      }
+    }
+    
+    return {
+      productId: id,
+      status: HttpStatus.OK,
+      error: '',
+    }
+  }
+
+  async remove(id: string): Promise<DeleteProductResponse> {
+    try {
+      const removedUser = await this.productRepository.update(id, {
+        isArchived: true,
+      });
+      if(removedUser.affected === 0) {
+        return {
+          productId: id,
+          status: HttpStatus.NOT_FOUND,
+          error: `Product with id ${id} not found`,
+        }
+      }
+    } catch (e){
+      return {
+        productId: id,
+        status: HttpStatus.BAD_REQUEST,
+        error: e.message || "Bad request",
+      }
+    }
+    return {
+      productId: id,
+      status: HttpStatus.OK,
+      error: '',
+    }
+  }
+
+  async decreaseStock(request: DecreaseProductDto): Promise<DecreaseProductResponse> {
+    try {
+      const product = await this.productRepository.findOne({
+        where: {
+          id: request.id,
+        },
+      });
+      if(!product) {
+        return {
+          productId: request.id,
+          status: HttpStatus.NOT_FOUND,
+          error: `Product with id ${request.id} not found`,
+        }
+      }
+  
+      if(product.stock - request.quantity < 0) {
+        return {
+          productId: request.id,
+          status: HttpStatus.BAD_REQUEST,
+          error: `Product with id ${request.id} has insufficient stock`,
+        }
+      }
+  
+      product.stock -= request.quantity;
+      await this.productRepository.save(product);
+      return {
+        productId: request.id,
+        status: HttpStatus.OK,
+        error: '',
+      }
+    } catch (e) {
+      return {
+        productId: request.id,
+        status: HttpStatus.BAD_REQUEST,
+        error: e.message || "Bad request",
+      }
     }
   }
 }
