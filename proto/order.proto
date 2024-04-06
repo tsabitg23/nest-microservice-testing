@@ -5,8 +5,8 @@ package order;
 option go_package = "/apps/api-gateway/pkg/order/pb";
 
 service OrderService {
-    rpc CreateOrder(CreateOrderDto) returns (Order);
-    rpc GetAllOrders(GetAllOrderDto) returns (Orders);
+    rpc CreateOrder(CreateOrderDto) returns (CreateOrderResponse);
+    rpc GetAllOrders(GetAllOrderDto) returns (GetAllOrderResponse);
 }
 
 message GetAllOrderDto{}
@@ -16,9 +16,21 @@ message CreateOrderDto {
     repeated CreateOrderProductsDto products = 3;
 }
 
+message CreateOrderResponse {
+    string orderId = 1;
+    int64 status = 2;
+    string error = 3;
+}
+
 message CreateOrderProductsDto {
     string productId = 1;
     int32 quantity = 2;
+}
+
+message GetAllOrderResponse {
+    repeated Order data = 1;
+    int64 status = 2;
+    string error = 3;
 }
 
 message Orders {

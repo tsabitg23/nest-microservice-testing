@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderServiceClient interface {
-	CreateOrder(ctx context.Context, in *CreateOrderDto, opts ...grpc.CallOption) (*Order, error)
-	GetAllOrders(ctx context.Context, in *GetAllOrderDto, opts ...grpc.CallOption) (*Orders, error)
+	CreateOrder(ctx context.Context, in *CreateOrderDto, opts ...grpc.CallOption) (*CreateOrderResponse, error)
+	GetAllOrders(ctx context.Context, in *GetAllOrderDto, opts ...grpc.CallOption) (*GetAllOrderResponse, error)
 }
 
 type orderServiceClient struct {
@@ -34,8 +34,8 @@ func NewOrderServiceClient(cc grpc.ClientConnInterface) OrderServiceClient {
 	return &orderServiceClient{cc}
 }
 
-func (c *orderServiceClient) CreateOrder(ctx context.Context, in *CreateOrderDto, opts ...grpc.CallOption) (*Order, error) {
-	out := new(Order)
+func (c *orderServiceClient) CreateOrder(ctx context.Context, in *CreateOrderDto, opts ...grpc.CallOption) (*CreateOrderResponse, error) {
+	out := new(CreateOrderResponse)
 	err := c.cc.Invoke(ctx, "/order.OrderService/CreateOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -43,8 +43,8 @@ func (c *orderServiceClient) CreateOrder(ctx context.Context, in *CreateOrderDto
 	return out, nil
 }
 
-func (c *orderServiceClient) GetAllOrders(ctx context.Context, in *GetAllOrderDto, opts ...grpc.CallOption) (*Orders, error) {
-	out := new(Orders)
+func (c *orderServiceClient) GetAllOrders(ctx context.Context, in *GetAllOrderDto, opts ...grpc.CallOption) (*GetAllOrderResponse, error) {
+	out := new(GetAllOrderResponse)
 	err := c.cc.Invoke(ctx, "/order.OrderService/GetAllOrders", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -56,8 +56,8 @@ func (c *orderServiceClient) GetAllOrders(ctx context.Context, in *GetAllOrderDt
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility
 type OrderServiceServer interface {
-	CreateOrder(context.Context, *CreateOrderDto) (*Order, error)
-	GetAllOrders(context.Context, *GetAllOrderDto) (*Orders, error)
+	CreateOrder(context.Context, *CreateOrderDto) (*CreateOrderResponse, error)
+	GetAllOrders(context.Context, *GetAllOrderDto) (*GetAllOrderResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -65,10 +65,10 @@ type OrderServiceServer interface {
 type UnimplementedOrderServiceServer struct {
 }
 
-func (UnimplementedOrderServiceServer) CreateOrder(context.Context, *CreateOrderDto) (*Order, error) {
+func (UnimplementedOrderServiceServer) CreateOrder(context.Context, *CreateOrderDto) (*CreateOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
 }
-func (UnimplementedOrderServiceServer) GetAllOrders(context.Context, *GetAllOrderDto) (*Orders, error) {
+func (UnimplementedOrderServiceServer) GetAllOrders(context.Context, *GetAllOrderDto) (*GetAllOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllOrders not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}

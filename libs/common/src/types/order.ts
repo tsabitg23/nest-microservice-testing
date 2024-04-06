@@ -2,7 +2,7 @@
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 
-export const protobufPackage = "order";
+// export const protobufPackage = "order";
 
 export interface GetAllOrderDto {
 }
@@ -12,9 +12,21 @@ export interface CreateOrderDto {
   products: CreateOrderProductsDto[];
 }
 
+export interface CreateOrderResponse {
+  orderId: string;
+  status: number;
+  error: string;
+}
+
 export interface CreateOrderProductsDto {
   productId: string;
   quantity: number;
+}
+
+export interface GetAllOrderResponse {
+  data: Order[];
+  status: number;
+  error: string;
 }
 
 export interface Orders {
@@ -40,15 +52,19 @@ export interface OrderProducts {
 export const ORDER_PACKAGE_NAME = "order";
 
 export interface OrderServiceClient {
-  createOrder(request: CreateOrderDto): Observable<Order>;
+  createOrder(request: CreateOrderDto): Observable<CreateOrderResponse>;
 
-  getAllOrders(request: GetAllOrderDto): Observable<Orders>;
+  getAllOrders(request: GetAllOrderDto): Observable<GetAllOrderResponse>;
 }
 
 export interface OrderServiceController {
-  createOrder(request: CreateOrderDto): Promise<Order> | Observable<Order> | Order;
+  createOrder(
+    request: CreateOrderDto,
+  ): Promise<CreateOrderResponse> | Observable<CreateOrderResponse> | CreateOrderResponse;
 
-  getAllOrders(request: GetAllOrderDto): Promise<Orders> | Observable<Orders> | Orders;
+  getAllOrders(
+    request: GetAllOrderDto,
+  ): Promise<GetAllOrderResponse> | Observable<GetAllOrderResponse> | GetAllOrderResponse;
 }
 
 export function OrderServiceControllerMethods() {
