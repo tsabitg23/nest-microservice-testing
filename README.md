@@ -35,6 +35,8 @@ $ cd apps/api-gateway && maker proto
 ```
 
 ## Documentation
+Postman collection can be obtain in `postman/` folders and can be imported into postman app.
+
 API documentation using Swagger can be accessed after running the application with the link below
 
 ```bash
