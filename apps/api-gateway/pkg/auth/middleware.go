@@ -32,8 +32,12 @@ func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
 		return
 	}
 
+	// get endpoint from ctx.Request
+	endpoint := ctx.Request.URL.Path
+
 	res, err := c.svc.Client.Validate(context.Background(), &pb.ValidateRequest{
 		Token: token[1],
+		Scope: endpoint,
 	})
 
 	if err != nil || res.Status != http.StatusOK {

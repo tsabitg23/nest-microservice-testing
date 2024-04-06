@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntityDto, UserRole } from '@app/common';
+import { BaseEntityDto } from '@app/common';
 
 @Entity({ name: 'user' })
 export class UserEntity extends BaseEntityDto {

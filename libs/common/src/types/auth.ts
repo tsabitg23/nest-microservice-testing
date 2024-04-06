@@ -29,6 +29,7 @@ export interface LoginResponse {
 
 export interface ValidateRequest {
   token: string;
+  scope: string;
 }
 
 export interface ValidateResponse {

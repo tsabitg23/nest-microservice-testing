@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { hashPassword } from '../utils/hashPassword';
 import { JwtService } from '@nestjs/jwt';
 import appConfig from '../config/appConfig';
+import { AUTHORIZATION } from '../config/constants';
 
 @Injectable()
 export class UsersService {
@@ -76,6 +77,12 @@ export class UsersService {
           secret: appConfig().secret
         }
       );
+      // simple authorization
+      const scope = validateRequest.scope.split('/')[1];
+      if(AUTHORIZATION[scope].indexOf(payload.aud) === -1){
+        throw new UnauthorizedException();
+      }
+      
       userId = payload.sub;
     } catch {
       throw new UnauthorizedException();
