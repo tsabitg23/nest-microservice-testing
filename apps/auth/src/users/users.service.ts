@@ -1,5 +1,5 @@
 import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ValidateRequest, ValidateResponse } from '@app/common';
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -25,14 +25,23 @@ export class UsersService {
     });
 
     if(user) {
-      throw new BadRequestException('Email already exists');
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Email already exists'
+      }
     }
-
     // create user
-    const newUser = this.userRepository.create(registerRequest);
-    newUser.salt = uuidv4();
-    newUser.password = await hashPassword(registerRequest.password, newUser.salt);
-    await this.userRepository.save(newUser);
+    try {
+      const newUser = this.userRepository.create(registerRequest);
+      newUser.salt = uuidv4();
+      newUser.password = await hashPassword(registerRequest.password, newUser.salt);
+      await this.userRepository.save(newUser);
+    } catch(e) {
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: 'Internal server error'
+      }
+    }
     return {
       status: 200,
       error: ''
@@ -48,12 +57,20 @@ export class UsersService {
     });
 
     if(!user) {
-      throw new NotFoundException('User not found');
+      return {
+        status: HttpStatus.NOT_FOUND,
+        error: 'User not found',
+        token: null
+      }
     }
 
     const password = await hashPassword(loginRequest.password, user.salt);
     if(password !== user.password) {
-      throw new BadRequestException('Invalid password');
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Invalid password',
+        token: null
+      }
     }
 
     const payload = { 
@@ -80,12 +97,20 @@ export class UsersService {
       // simple authorization
       const scope = validateRequest.scope.split('/')[1];
       if(AUTHORIZATION[scope].indexOf(payload.aud) === -1){
-        throw new UnauthorizedException();
+        return {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Unauthorized',
+          userId: ''
+        }
       }
       
       userId = payload.sub;
     } catch {
-      throw new UnauthorizedException();
+      return {
+        status: HttpStatus.UNAUTHORIZED,
+        error: 'Unauthorized',
+        userId: ''
+      }
     }
 
     return {
