@@ -2,7 +2,7 @@
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 
-export const protobufPackage = "product";
+// export const protobufPackage = "product";
 
 export interface Empty {
 }
@@ -26,8 +26,13 @@ export interface UpdateProductDto {
   stock: number;
 }
 
+export interface DecreaseProductDto {
+  id: string;
+  quantity: number;
+}
+
 export interface Products {
-  products: Product[];
+  data: Product[];
 }
 
 export interface Product {
@@ -53,6 +58,8 @@ export interface ProductServiceClient {
   updateProduct(request: UpdateProductDto): Observable<Product>;
 
   deleteProduct(request: FindOneProductDto): Observable<Product>;
+
+  decreaseStock(request: DecreaseProductDto): Observable<Product>;
 }
 
 export interface ProductServiceController {
@@ -65,6 +72,8 @@ export interface ProductServiceController {
   updateProduct(request: UpdateProductDto): Promise<Product> | Observable<Product> | Product;
 
   deleteProduct(request: FindOneProductDto): Promise<Product> | Observable<Product> | Product;
+
+  decreaseStock(request: DecreaseProductDto): Promise<Product> | Observable<Product> | Product;
 }
 
 export function ProductServiceControllerMethods() {
@@ -75,6 +84,7 @@ export function ProductServiceControllerMethods() {
       "createProduct",
       "updateProduct",
       "deleteProduct",
+      "decreaseStock",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

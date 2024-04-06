@@ -2,10 +2,12 @@
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 
-// export const protobufPackage = "order";
+export const protobufPackage = "order";
+
+export interface GetAllOrderDto {
+}
 
 export interface CreateOrderDto {
-  totalPrice: number;
   userId: string;
   products: CreateOrderProductsDto[];
 }
@@ -13,6 +15,10 @@ export interface CreateOrderDto {
 export interface CreateOrderProductsDto {
   productId: string;
   quantity: number;
+}
+
+export interface Orders {
+  data: Order[];
 }
 
 export interface Order {
@@ -35,15 +41,19 @@ export const ORDER_PACKAGE_NAME = "order";
 
 export interface OrderServiceClient {
   createOrder(request: CreateOrderDto): Observable<Order>;
+
+  getAllOrders(request: GetAllOrderDto): Observable<Orders>;
 }
 
 export interface OrderServiceController {
   createOrder(request: CreateOrderDto): Promise<Order> | Observable<Order> | Order;
+
+  getAllOrders(request: GetAllOrderDto): Promise<Orders> | Observable<Orders> | Orders;
 }
 
 export function OrderServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createOrder"];
+    const grpcMethods: string[] = ["createOrder", "getAllOrders"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("OrderService", method)(constructor.prototype[method], method, descriptor);

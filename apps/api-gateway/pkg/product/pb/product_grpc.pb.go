@@ -27,6 +27,7 @@ type ProductServiceClient interface {
 	CreateProduct(ctx context.Context, in *CreateProductDto, opts ...grpc.CallOption) (*Product, error)
 	UpdateProduct(ctx context.Context, in *UpdateProductDto, opts ...grpc.CallOption) (*Product, error)
 	DeleteProduct(ctx context.Context, in *FindOneProductDto, opts ...grpc.CallOption) (*Product, error)
+	DecreaseStock(ctx context.Context, in *DecreaseProductDto, opts ...grpc.CallOption) (*Product, error)
 }
 
 type productServiceClient struct {
@@ -82,6 +83,15 @@ func (c *productServiceClient) DeleteProduct(ctx context.Context, in *FindOnePro
 	return out, nil
 }
 
+func (c *productServiceClient) DecreaseStock(ctx context.Context, in *DecreaseProductDto, opts ...grpc.CallOption) (*Product, error) {
+	out := new(Product)
+	err := c.cc.Invoke(ctx, "/product.ProductService/DecreaseStock", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProductServiceServer is the server API for ProductService service.
 // All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility
@@ -91,6 +101,7 @@ type ProductServiceServer interface {
 	CreateProduct(context.Context, *CreateProductDto) (*Product, error)
 	UpdateProduct(context.Context, *UpdateProductDto) (*Product, error)
 	DeleteProduct(context.Context, *FindOneProductDto) (*Product, error)
+	DecreaseStock(context.Context, *DecreaseProductDto) (*Product, error)
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -112,6 +123,9 @@ func (UnimplementedProductServiceServer) UpdateProduct(context.Context, *UpdateP
 }
 func (UnimplementedProductServiceServer) DeleteProduct(context.Context, *FindOneProductDto) (*Product, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProduct not implemented")
+}
+func (UnimplementedProductServiceServer) DecreaseStock(context.Context, *DecreaseProductDto) (*Product, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecreaseStock not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
 
@@ -216,6 +230,24 @@ func _ProductService_DeleteProduct_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductService_DecreaseStock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecreaseProductDto)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).DecreaseStock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/product.ProductService/DecreaseStock",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).DecreaseStock(ctx, req.(*DecreaseProductDto))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProductService_ServiceDesc is the grpc.ServiceDesc for ProductService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +274,10 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteProduct",
 			Handler:    _ProductService_DeleteProduct_Handler,
+		},
+		{
+			MethodName: "DecreaseStock",
+			Handler:    _ProductService_DecreaseStock_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

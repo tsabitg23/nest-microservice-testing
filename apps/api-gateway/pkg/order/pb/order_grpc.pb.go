@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderServiceClient interface {
 	CreateOrder(ctx context.Context, in *CreateOrderDto, opts ...grpc.CallOption) (*Order, error)
+	GetAllOrders(ctx context.Context, in *GetAllOrderDto, opts ...grpc.CallOption) (*Orders, error)
 }
 
 type orderServiceClient struct {
@@ -42,11 +43,21 @@ func (c *orderServiceClient) CreateOrder(ctx context.Context, in *CreateOrderDto
 	return out, nil
 }
 
+func (c *orderServiceClient) GetAllOrders(ctx context.Context, in *GetAllOrderDto, opts ...grpc.CallOption) (*Orders, error) {
+	out := new(Orders)
+	err := c.cc.Invoke(ctx, "/order.OrderService/GetAllOrders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility
 type OrderServiceServer interface {
 	CreateOrder(context.Context, *CreateOrderDto) (*Order, error)
+	GetAllOrders(context.Context, *GetAllOrderDto) (*Orders, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -56,6 +67,9 @@ type UnimplementedOrderServiceServer struct {
 
 func (UnimplementedOrderServiceServer) CreateOrder(context.Context, *CreateOrderDto) (*Order, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+}
+func (UnimplementedOrderServiceServer) GetAllOrders(context.Context, *GetAllOrderDto) (*Orders, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllOrders not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 
@@ -88,6 +102,24 @@ func _OrderService_CreateOrder_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_GetAllOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllOrderDto)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).GetAllOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/order.OrderService/GetAllOrders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).GetAllOrders(ctx, req.(*GetAllOrderDto))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrder",
 			Handler:    _OrderService_CreateOrder_Handler,
+		},
+		{
+			MethodName: "GetAllOrders",
+			Handler:    _OrderService_GetAllOrders_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

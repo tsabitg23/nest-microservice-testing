@@ -1,11 +1,12 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderEntity } from './entities/order.entity';
-import { Repository } from 'typeorm';
-import { CreateOrderDto, Order, PRODUCT_SERVICE_NAME, ProductServiceClient } from '@app/common';
+import { DataSource, Repository } from 'typeorm';
+import { CreateOrderDto, Order, Orders, Product, PRODUCT_SERVICE_NAME, ProductServiceClient } from '@app/common';
 import { PRODUCT_SERVICE } from '../config/constants';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { OrderProductsEntity } from './entities/orderProducts.entity';
 
 @Injectable()
 export class OrderService implements OnModuleInit {
@@ -13,28 +14,72 @@ export class OrderService implements OnModuleInit {
   constructor(
     @InjectRepository(OrderEntity)
     private orderRepository: Repository<OrderEntity>,
+    @InjectRepository(OrderProductsEntity)
+    private orderProductRepository: Repository<OrderProductsEntity>,
     @Inject(PRODUCT_SERVICE)
-    private productServiceClient: ClientGrpc
+    private productServiceClient: ClientGrpc,
+    private dataSource: DataSource
   ) {}
 
   onModuleInit() {
     this.productService = this.productServiceClient.getService<ProductServiceClient>(PRODUCT_SERVICE_NAME);
   }
+
+  async getAllOrders(): Promise<Orders> {
+    const data = await this.orderRepository.find({
+      where: {
+        isArchived: false
+      },
+      relations: ['orderProducts']
+    });
+    return {
+      data: data
+    }
+  }
   
   async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
+    let totalPrice = 0;
+
+    const orderData = await this.orderRepository.create(createOrderDto);
+    let orderProducts:OrderProductsEntity[] = [];
     // check stock
     for (const product of createOrderDto.products) {
-      if (!await this.isProductInStock(product.productId, product.quantity)) {
+      const productData = await this.getProductDetail(product.productId); 
+      const isOutOfStock = productData.stock - product.quantity < 0;
+      if (isOutOfStock) {
         throw new Error(`Product ${product.productId} is out of stock`);
       }
+      const subTotal = productData.price * product.quantity;
+      totalPrice += subTotal;
+      const item = new OrderProductsEntity();
+      item.productId = product.productId;
+      item.quantity = product.quantity;
+      item.price = productData.price;
+      item.order = orderData;
+      orderProducts.push(item);
     }
-    const orderProducts = await this.orderRepository.create(createOrderDto);
-    return orderProducts;
+
+    orderData.totalPrice = totalPrice;
+    orderData.orderProducts = orderProducts;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.save(OrderEntity, orderData);
+      await queryRunner.manager.save(OrderProductsEntity, orderProducts);
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      throw e;
+    } finally {
+      await queryRunner.release();
+    }
+    return orderData;
   }
 
-  private async isProductInStock(productId: string, quantity: number): Promise<boolean> {
+  private async getProductDetail(productId: string): Promise<Product> {
     const productObservable = this.productService.findOneProduct({ id: productId});
     const product = await firstValueFrom(productObservable);
-    return product.stock - quantity >= 0;
+    return product;
   }
 }

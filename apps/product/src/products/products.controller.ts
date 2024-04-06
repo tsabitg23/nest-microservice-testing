@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import {
   CreateProductDto,
+  DecreaseProductDto,
   FindOneProductDto,
   Product,
   Products,
@@ -33,5 +34,9 @@ export class ProductsController implements ProductServiceController {
 
   deleteProduct(request: FindOneProductDto): Promise<Product> {
     return this.productsService.remove(request.id);
+  }
+
+  decreaseStock(request: DecreaseProductDto): Promise<Product> {
+    return this.productsService.decreaseStock(request);
   }
 }

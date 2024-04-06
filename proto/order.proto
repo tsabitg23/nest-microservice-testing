@@ -6,10 +6,12 @@ option go_package = "/apps/api-gateway/pkg/order/pb";
 
 service OrderService {
     rpc CreateOrder(CreateOrderDto) returns (Order);
+    rpc GetAllOrders(GetAllOrderDto) returns (Orders);
 }
 
+message GetAllOrderDto{}
+
 message CreateOrderDto {
-    float totalPrice = 1;
     string userId = 2;
     repeated CreateOrderProductsDto products = 3;
 }
@@ -17,6 +19,10 @@ message CreateOrderDto {
 message CreateOrderProductsDto {
     string productId = 1;
     int32 quantity = 2;
+}
+
+message Orders {
+    repeated Order data = 1;
 }
 
 message Order {
