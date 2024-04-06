@@ -47,7 +47,7 @@ export class OrderService implements OnModuleInit {
       const productData = await this.getProductDetail(product.productId); 
       const isOutOfStock = productData.stock - product.quantity < 0;
       if (isOutOfStock) {
-        throw new Error(`Product ${product.productId} is out of stock`);
+        throw new Error(`Product ${productData.name} is out of stock`);
       }
       const subTotal = productData.price * product.quantity;
       totalPrice += subTotal;
@@ -67,6 +67,9 @@ export class OrderService implements OnModuleInit {
     try {
       await queryRunner.manager.save(OrderEntity, orderData);
       await queryRunner.manager.save(OrderProductsEntity, orderProducts);
+      for (const product of createOrderDto.products) {
+        await this.decreaseStock(product.productId, product.quantity);
+      }
       await queryRunner.commitTransaction();
     } catch (e) {
       await queryRunner.rollbackTransaction();
@@ -81,5 +84,11 @@ export class OrderService implements OnModuleInit {
     const productObservable = this.productService.findOneProduct({ id: productId});
     const product = await firstValueFrom(productObservable);
     return product;
+  }
+
+  private async decreaseStock(productId: string, quantity: number): Promise<boolean> {
+    const productObservable = this.productService.decreaseStock({ id: productId, quantity: quantity});
+    const product = await firstValueFrom(productObservable);
+    return !!product.id;
   }
 }
