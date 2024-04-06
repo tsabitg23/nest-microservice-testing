@@ -12,7 +12,7 @@ async function bootstrap() {
       options: {
         protoPath: join(__dirname, '../order.proto'),
         package: ORDER_PACKAGE_NAME,
-        url: process.env.ORDER_SERVICE_URL,
+        url: process.env.ORDER_SERVICE_URL || 'localhost:5001',
       }
     }
   );

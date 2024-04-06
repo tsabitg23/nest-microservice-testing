@@ -10,7 +10,7 @@ export abstract class BaseEntityDto {
 
   @ApiProperty({ example: false })
   @IsBoolean()
-  @Column()
+  @Column({ default: false})
   isArchived: boolean;
 
   @ApiProperty({ example: new Date().toISOString() })

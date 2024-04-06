@@ -1,5 +1,6 @@
 export default () => {
   return {
+    serviceUrl: process.env.SERVICE_URL,
     secret: process.env.SECRET,
     database: {
       client: process.env.DATABASE_CLIENT,

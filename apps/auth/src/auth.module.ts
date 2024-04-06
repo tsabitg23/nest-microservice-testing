@@ -8,6 +8,7 @@ import appConfig from './config/appConfig';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       load: [appConfig],
       envFilePath: ['apps/auth/.env'],
       validationSchema: Joi.object({
@@ -21,6 +22,7 @@ import appConfig from './config/appConfig';
         DATABASE_USERNAME: Joi.string(),
         DATABASE_PASSWORD: Joi.string().empty('').default(''),
         DATABASE_PORT: Joi.number().default(5432),
+        SECRET: Joi.string(),
       }),
     }),
     TypeOrmModule.forRootAsync({
