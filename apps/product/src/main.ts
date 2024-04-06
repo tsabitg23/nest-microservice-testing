@@ -6,14 +6,14 @@ import { join } from 'path';
 import { PRODUCT_PACKAGE_NAME } from '@app/common';
 
 async function bootstrap() {
-  const url = process.env.PRODUCT_SERVICE_URL || 'localhost:5000';
+  const url = process.env.PRODUCT_SERVICE_URL || '0.0.0.0:5001';
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     ProductModule,
     {
       transport: Transport.GRPC,
       options: {
-        protoPath: join(__dirname, '../product.proto'),
         package: PRODUCT_PACKAGE_NAME,
+        protoPath: join(__dirname, '../product.proto'),
         url
       },
     },

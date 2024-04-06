@@ -93,12 +93,12 @@ export class OrderService implements OnModuleInit {
   private async getProductDetail(productId: string): Promise<Product> {
     const productObservable = this.productService.findOneProduct({ id: productId});
     const product = await firstValueFrom(productObservable);
-    return product;
+    return product.data;
   }
 
   private async decreaseStock(productId: string, quantity: number): Promise<boolean> {
     const productObservable = this.productService.decreaseStock({ id: productId, quantity: quantity});
     const product = await firstValueFrom(productObservable);
-    return !!product.id;
+    return !!product.productId;
   }
 }
