@@ -10,12 +10,10 @@ import { OrderProductsEntity } from './entities/orderProducts.entity';
 
 @Injectable()
 export class OrderService implements OnModuleInit {
-  private productService: ProductServiceClient
+  private productService: ProductServiceClient;
   constructor(
     @InjectRepository(OrderEntity)
     private orderRepository: Repository<OrderEntity>,
-    @InjectRepository(OrderProductsEntity)
-    private orderProductRepository: Repository<OrderProductsEntity>,
     @Inject(PRODUCT_SERVICE)
     private productServiceClient: ClientGrpc,
     private dataSource: DataSource

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
@@ -19,7 +20,8 @@ import { join } from 'path';
         transport: Transport.GRPC,
         options: {
           package: PRODUCT_PACKAGE_NAME,
-          protoPath: join(__dirname, '../product.proto')
+          protoPath: join(__dirname, '../product.proto'),
+          url: process.env.PRODUCT_SERVICE_URL || '0.0.0.0:5001'
         }
       }
     ]),
