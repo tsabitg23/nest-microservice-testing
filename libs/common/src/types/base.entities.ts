@@ -19,9 +19,9 @@ export abstract class BaseEntityDto {
     type: 'timestamp with time zone',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  createdAt: string;
+  createdAt: Date;
 
   @ApiProperty({ example: new Date().toISOString() })
   @IsDateString()
-  updatedAt: string;
+  updatedAt: Date;
 }

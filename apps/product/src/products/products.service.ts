@@ -13,7 +13,11 @@ export class ProductsService {
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const product = this.productRepository.create(createProductDto);
     await this.productRepository.save(product);
-    return product;
+    return {
+      ...product,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt && product.updatedAt.toISOString(),
+    }
   }
 
   async findAll(): Promise<Products> {
@@ -23,16 +27,28 @@ export class ProductsService {
       },
     });
     return {
-      data: products,
+      data: products.map(product => {
+        return {
+          ...product,
+          createdAt: product.createdAt.toISOString(),
+          updatedAt: product.updatedAt && product.updatedAt.toISOString(),
+        }
+      }),
     };
   }
 
-  findOne(id: string) {
-    return this.productRepository.findOne({
+  async findOne(id: string):Promise<Product> {
+    const product = await this.productRepository.findOne({
       where: {
         id,
       },
     });
+
+    return {
+      ...product,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt && product.updatedAt.toISOString(),
+    }
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
@@ -69,6 +85,10 @@ export class ProductsService {
 
     product.stock -= request.quantity;
     await this.productRepository.save(product);
-    return product;
+    return {
+      ...product,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt && product.updatedAt.toISOString(),
+    }
   }
 }

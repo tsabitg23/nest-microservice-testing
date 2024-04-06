@@ -33,7 +33,13 @@ export class OrderService implements OnModuleInit {
       relations: ['orderProducts']
     });
     return {
-      data: data
+      data: data.map(order => {
+        return {
+          ...order,
+          createdAt: order.createdAt.toISOString(),
+          updatedAt: order.updatedAt && order.updatedAt.toISOString(),
+        }      
+      })
     }
   }
   
@@ -77,7 +83,11 @@ export class OrderService implements OnModuleInit {
     } finally {
       await queryRunner.release();
     }
-    return orderData;
+    return {
+      ...orderData,
+      createdAt: orderData.createdAt.toISOString(),
+      updatedAt: orderData.updatedAt && orderData.updatedAt.toISOString(),
+    };
   }
 
   private async getProductDetail(productId: string): Promise<Product> {
