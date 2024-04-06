@@ -1,0 +1,337 @@
+{
+	"info": {
+		"_postman_id": "ff633112-08b9-4683-9f76-429b48dafcbe",
+		"name": "GRPC-Microservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "546861"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"tsabitg23\",\n    \"password\": \"123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"tsabitg23\",\n    \"password\": \"123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRzYWJpdGcyMyIsInN1YiI6IjNhMWEwM2E2LTEwYWYtNDRmZC1hMGYxLTJiMjQ1NGRiNWJkYyIsImlhdCI6MTcxMjM5Mjg4NSwiZXhwIjoxNzEyMzkzMzg1fQ.tpsE2XN5ncqsTtZuyb6kalcDqBuTTTycYslXf_DaA1c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRzYWJpdGcyMyIsInN1YiI6IjNhMWEwM2E2LTEwYWYtNDRmZC1hMGYxLTJiMjQ1NGRiNWJkYyIsImlhdCI6MTcxMjM5MDAzNSwiZXhwIjoxNzEyMzkwNTM1fQ.TlEnCi27qMth3pNfCwlkLBvgsfhxSnpBW28sVINBrXA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price\": 101\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/4e6088dc-c30c-4030-8839-54fa18861ab1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"4e6088dc-c30c-4030-8839-54fa18861ab1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRzYWJpdGcyMyIsInN1YiI6IjNhMWEwM2E2LTEwYWYtNDRmZC1hMGYxLTJiMjQ1NGRiNWJkYyIsImlhdCI6MTcxMjM5Mjg4NSwiZXhwIjoxNzEyMzkzMzg1fQ.tpsE2XN5ncqsTtZuyb6kalcDqBuTTTycYslXf_DaA1c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\" : \"Mineral water\",\n    \"description\": \"For drinking purposes\",\n    \"price\": 100,\n    \"stock\": 1000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRzYWJpdGcyMyIsInN1YiI6IjNhMWEwM2E2LTEwYWYtNDRmZC1hMGYxLTJiMjQ1NGRiNWJkYyIsImlhdCI6MTcxMjM5MDAzNSwiZXhwIjoxNzEyMzkwNTM1fQ.TlEnCi27qMth3pNfCwlkLBvgsfhxSnpBW28sVINBrXA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price\": 101\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/4e6088dc-c30c-4030-8839-54fa18861ab1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"4e6088dc-c30c-4030-8839-54fa18861ab1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRzYWJpdGcyMyIsInN1YiI6IjNhMWEwM2E2LTEwYWYtNDRmZC1hMGYxLTJiMjQ1NGRiNWJkYyIsImlhdCI6MTcxMjM5MDAzNSwiZXhwIjoxNzEyMzkwNTM1fQ.TlEnCi27qMth3pNfCwlkLBvgsfhxSnpBW28sVINBrXA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"price\": 101\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/product/4e6088dc-c30c-4030-8839-54fa18861ab1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"product",
+								"4e6088dc-c30c-4030-8839-54fa18861ab1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get All Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRzYWJpdGcyMyIsInN1YiI6IjNhMWEwM2E2LTEwYWYtNDRmZC1hMGYxLTJiMjQ1NGRiNWJkYyIsImlhdCI6MTcxMjM5NDQ5NSwiZXhwIjoxNzEyMzk0OTk1fQ.Id8dfqhdFbV-7dNZi1CTkALxL0WotIFUJ-J_BJ6CZwU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRzYWJpdGcyMyIsInN1YiI6IjNhMWEwM2E2LTEwYWYtNDRmZC1hMGYxLTJiMjQ1NGRiNWJkYyIsImlhdCI6MTcxMjM5NDQ5NSwiZXhwIjoxNzEyMzk0OTk1fQ.Id8dfqhdFbV-7dNZi1CTkALxL0WotIFUJ-J_BJ6CZwU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"products\": [\n        {\n            \"productId\": \"89c3fcf3-d604-4d1c-9cb4-15f36286cdf4\",\n            \"quantity\": 2\n        },\n        {\n            \"productId\": \"fe5ba7e1-1ace-4679-90c5-7a4b30b1f866\",\n            \"quantity\": 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
