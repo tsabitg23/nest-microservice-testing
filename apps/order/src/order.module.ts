@@ -4,6 +4,10 @@ import { OrderModule } from './order/order.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/appConfig';
 import * as Joi from 'joi';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PRODUCT_SERVICE } from './config/constants';
+import { PRODUCT, PRODUCT_PACKAGE_NAME } from '@app/common';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -45,6 +49,16 @@ import * as Joi from 'joi';
       inject: [ConfigService],
     }),
     OrderModule,
+    ClientsModule.register([
+      {
+        name: PRODUCT_SERVICE,
+        transport: Transport.GRPC,
+        options: {
+          package: PRODUCT_PACKAGE_NAME,
+          protoPath: join(__dirname, '../product.proto')
+        }
+      }
+    ]),
   ],
   controllers: [],
   providers: [],
