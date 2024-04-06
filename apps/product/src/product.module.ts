@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProductsModule } from './products/products.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import Joi from 'joi';
+import * as Joi from 'joi';
 import appConfig from './config/appConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     ConfigModule.forRoot({
       load: [appConfig],
+      envFilePath: ['apps/product/.env'],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test', 'provision')
@@ -33,7 +34,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           password: configService.get<string>('database.password'),
           database: configService.get<string>('database.name'),
           entities: [],
-          synchronize: false,
+          synchronize: true,
           autoLoadEntities: true,
           logging: false,
           extra: {
