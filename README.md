@@ -1,4 +1,4 @@
-# GO GRPC API GATEWAY
+# NestJS - GO GRPC Microservices
 
 ## Description
 This project is used as assignment for hiring process. This will be the API gateway for microservice application. The services is written using NestJS monorepo

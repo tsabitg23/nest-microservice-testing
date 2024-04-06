@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package product;
 
+option go_package = "/apps/api-gateway/pkg/product/pb";
+
 service ProductService {
   rpc FindOneProduct(FindOneProductDto) returns (Product);
   rpc FindAllProducts(Empty) returns (Products);
