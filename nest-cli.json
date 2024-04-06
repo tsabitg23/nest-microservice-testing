@@ -18,7 +18,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
-        "assets": ["proto/*.proto"],
+        "assets": [
+          "proto/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -29,7 +31,22 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/product/tsconfig.app.json",
-        "assets": ["proto/*.proto"],
+        "assets": [
+          "proto/*.proto"
+        ],
+        "watchAssets": true
+      }
+    },
+    "order": {
+      "type": "application",
+      "root": "apps/order",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
+      "compilerOptions": {
+        "tsConfigPath": "apps/order/tsconfig.app.json",
+        "assets": [
+          "proto/*.proto"
+        ],
         "watchAssets": true
       }
     },

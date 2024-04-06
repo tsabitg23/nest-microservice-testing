@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package order;
+
+service OrderService {
+    rpc CreateOrder(CreateOrderDto) returns (Order);
+}
+
+message CreateOrderDto {
+    float totalPrice = 1;
+    string userId = 2;
+    repeated CreateOrderProductsDto products = 3;
+}
+
+message CreateOrderProductsDto {
+    string productId = 1;
+    int32 quantity = 2;
+}
+
+message Order {
+    string id = 1;
+    float totalPrice = 2;
+    string userId = 3;
+    repeated OrderProducts orderProducts = 4;
+    bool isArchived = 5;
+    string createdAt = 6;
+    string updatedAt = 7;
+}
+
+message OrderProducts {
+    string productId = 1;
+    int32 quantity = 2;
+    float price = 3;
+}

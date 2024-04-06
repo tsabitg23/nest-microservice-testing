@@ -6,10 +6,12 @@ import {
   Product,
   Products,
   ProductServiceController,
+  ProductServiceControllerMethods,
   UpdateProductDto,
 } from '@app/common';
 
 @Controller()
+@ProductServiceControllerMethods()
 export class ProductsController implements ProductServiceController {
   constructor(private readonly productsService: ProductsService) {}
 
