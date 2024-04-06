@@ -4,9 +4,11 @@ import { Observable } from "rxjs";
 
 // export const protobufPackage = "auth";
 
+/** Register */
 export interface RegisterRequest {
   email: string;
   password: string;
+  role: string;
 }
 
 export interface RegisterResponse {

@@ -11,6 +11,7 @@ import (
 type RegisterRequestBody struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Role     string `json:"role"`
 }
 
 func Register(ctx *gin.Context, c pb.AuthServiceClient) {
@@ -21,9 +22,18 @@ func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 		return
 	}
 
+	// if role not "admin" or "sales", throw http.StatusBadRequest
+	if b.Role != "admin" && b.Role != "sales" {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Role must be 'admin' or 'sales'",
+		})
+		return
+	}
+
 	res, err := c.Register(context.Background(), &pb.RegisterRequest{
 		Email:    b.Email,
 		Password: b.Password,
+		Role:     b.Role,
 	})
 
 	if err != nil {

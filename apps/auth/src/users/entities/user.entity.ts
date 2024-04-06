@@ -1,5 +1,5 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BaseEntityDto } from '@app/common';
+import { BaseEntityDto, UserRole } from '@app/common';
 
 @Entity({ name: 'user' })
 export class UserEntity extends BaseEntityDto {
@@ -12,4 +12,7 @@ export class UserEntity extends BaseEntityDto {
 
   @Column({ type: 'varchar'})
   salt: string;
+
+  @Column({ type: 'varchar' })
+  role: string;
 }

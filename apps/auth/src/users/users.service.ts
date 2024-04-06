@@ -31,7 +31,6 @@ export class UsersService {
     const newUser = this.userRepository.create(registerRequest);
     newUser.salt = uuidv4();
     newUser.password = await hashPassword(registerRequest.password, newUser.salt);
-
     await this.userRepository.save(newUser);
     return {
       status: 200,
@@ -56,7 +55,11 @@ export class UsersService {
       throw new BadRequestException('Invalid password');
     }
 
-    const payload = { email: user.email, sub: user.id };
+    const payload = { 
+      email: user.email, 
+      sub: user.id,
+      aud: user.role
+    };
     return {
       status: 200,
       error: '',

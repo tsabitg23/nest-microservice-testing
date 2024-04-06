@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"tsabitg23\",\n    \"password\": \"123\"\n}",
+							"raw": "{\n    \"email\": \"tsabitg23\",\n    \"password\": \"123\",\n   \"role\": \"admin\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
