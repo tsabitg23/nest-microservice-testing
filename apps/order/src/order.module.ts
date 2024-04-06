@@ -49,16 +49,6 @@ import { join } from 'path';
       inject: [ConfigService],
     }),
     OrderModule,
-    ClientsModule.register([
-      {
-        name: PRODUCT_SERVICE,
-        transport: Transport.GRPC,
-        options: {
-          package: PRODUCT_PACKAGE_NAME,
-          protoPath: join(__dirname, '../product.proto')
-        }
-      }
-    ]),
   ],
   controllers: [],
   providers: [],

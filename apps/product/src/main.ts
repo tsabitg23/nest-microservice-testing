@@ -12,6 +12,7 @@ async function bootstrap() {
       options: {
         protoPath: join(__dirname, '../product.proto'),
         package: PRODUCT_PACKAGE_NAME,
+        url: process.env.PRODUCT_SERVICE_URL,
       },
     },
   );
