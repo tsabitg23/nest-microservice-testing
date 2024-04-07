@@ -39,13 +39,9 @@ $ cd apps/api-gateway && make server
 docker compose up -d 
 ```
 
-## Regenerate Proto
+### Run test
 ```bash
-# For NestJS typescript
-$ yarn run proto:generate
-
-# For golang
-$ cd apps/api-gateway && maker proto
+$ yarn test
 ```
 
 ## Documentation
@@ -56,4 +52,13 @@ API documentation using Swagger can be accessed after running the `api_gateway` 
 ```bash
 http://localhost:{PORT}/swagger/index.html
 # Default port is 3000
+```
+
+## Regenerate Proto
+```bash
+# For NestJS typescript
+$ yarn run proto:generate
+
+# For golang
+$ cd apps/api-gateway && maker proto
 ```

@@ -105,10 +105,10 @@ export class UsersService {
       }
       
       userId = payload.sub;
-    } catch {
+    } catch(e) {
       return {
         status: HttpStatus.UNAUTHORIZED,
-        error: 'Unauthorized',
+        error: 'Invalid token',
         userId: ''
       }
     }
