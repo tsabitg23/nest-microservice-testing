@@ -4,128 +4,105 @@ import { Repository } from 'typeorm';
 import { ProductEntity } from '../products.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { mockProducts } from './products.test.utils';
+import { TestDatabaseModule } from '../../utils/datasource.provider';
 
 describe('ProductsService', () => {
   let service: ProductsService;
   let repository: Repository<ProductEntity>;
-  let mockData: ProductEntity[] = [];
-  beforeEach(async () => {
+  let ProductEntityRepositoryToken = getRepositoryToken(ProductEntity);
+
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        TestDatabaseModule
+      ],
       providers: [
         ProductsService,
         {
-          provide: getRepositoryToken(ProductEntity),
-          useClass: Repository
+          provide: ProductEntityRepositoryToken,
+          useClass: Repository<ProductEntity>
         }
       ],
     }).compile();
 
     service = module.get<ProductsService>(ProductsService);
-    repository = module.get<Repository<ProductEntity>>(getRepositoryToken(ProductEntity))
-    mockData = mockProducts;
+    repository = module.get<Repository<ProductEntity>>(ProductEntityRepositoryToken);
+    await repository.save(mockProducts);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+  afterAll(async () => {
+    await repository.query(`TRUNCATE TABLE "product" CASCADE;`);
+  })
 
   it('should get all products', async () => {
-    jest
-      .spyOn(repository, "find")
-      .mockResolvedValue(mockData);
-    const products = await service.findAll();
-    const expectedResult = mockData.map(product => {
-      return {
-        ...product,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt && product.updatedAt.toISOString(),
-      }
-    });
-    expect(products.data).toEqual(expectedResult);
+    const result = await service.findAll();
+    expect(result.data.length).toEqual(mockProducts.length);
   });
 
   it('should get one products', async () => {
-    const mockProduct = mockData[0];
-    jest
-      .spyOn(repository, "findOne")
-      .mockResolvedValue(mockProduct);
-    const product = await service.findOne(mockProduct.id);
-    const expectedResult = {
-      ...mockProduct,
-      createdAt: mockProduct.createdAt.toISOString(),
-      updatedAt: mockProduct.updatedAt && mockProduct.updatedAt.toISOString(),
-    };
-    expect(product.data).toEqual(expectedResult);
+    const result = await service.findOne(mockProducts[0].id);
+    const expectedProduct = {
+      ...mockProducts[0],
+      price: mockProducts[0].price.toFixed(2),
+      createdAt: mockProducts[0].createdAt.toISOString(),
+    }
+    expect(result.data).toEqual(expect.objectContaining(expectedProduct));
+  });
+
+  it('Find One > ID not found', async () => {
+    const testProduct = await service.findOne('eeb617d0-f12c-4575-9a4c-642389583db9');
+    expect(testProduct.error).toEqual('Product with id eeb617d0-f12c-4575-9a4c-642389583db9 not found');
+    expect(testProduct.status).toEqual(404);
   });
 
   it('should create a product', async () => {
-    const mockProduct = mockData[0];
-    jest
-      .spyOn(repository, "create")
-      .mockReturnValue(mockProduct);
-    jest
-      .spyOn(repository, "save")
-      .mockResolvedValue(mockProduct);
-    const product = await service.create(mockProduct);
+    const testProduct = await service.create(mockProducts[0]);
     const expectedResult = {
-      productId: mockProduct.id,
+      productId: testProduct.productId,
       status: 201,
       error: '',
     };
-    expect(product).toEqual(expectedResult);
+    expect(testProduct).toEqual(expectedResult);
+    const expectedProduct = {
+      ...mockProducts[0],
+      price: mockProducts[0].price.toFixed(2),
+    }
+    const queryResult = await repository.findOne({where: {id: testProduct.productId}});
+    expect(queryResult).toEqual(expect.objectContaining(expectedProduct));
   });
 
   it('should update a product', async () => {
-    const mockProduct = mockData[0];
-    jest
-      .spyOn(repository, "findOne")
-      .mockResolvedValue(mockProduct);
-      jest
-      .spyOn(repository, "update")
-      .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: []});
-    const product = await service.update(mockProduct.id, mockProduct);
+    const updatedData = {
+      ...mockProducts[0],
+      name: 'new name'
+    }
+    const testProduct = await service.update(updatedData.id, updatedData);
     const expectedResult = {
-      productId: mockProduct.id,
+      productId: testProduct.productId,
       status: 200,
       error: '',
     };
-    expect(product).toEqual(expectedResult);
-    expect(repository.update).toHaveBeenCalledWith(mockProduct.id, mockProduct);
+    expect(testProduct).toEqual(expectedResult);
+    const queryResult = await repository.findOne({where: {id: testProduct.productId}});
+    expect(queryResult.name).toEqual(updatedData.name);
   });
 
+  it('Update > ID not found', async () => {
+    const testProduct = await service.update('eeb617d0-f12c-4575-9a4c-642389583db9', mockProducts[0]);
+    expect(testProduct.error).toEqual('Product with id eeb617d0-f12c-4575-9a4c-642389583db9 not found');
+    expect(testProduct.status).toEqual(404);
+  })
+
   it('should delete a product', async () => {
-    const mockProduct = mockData[0];
-    jest
-      .spyOn(repository, "findOne")
-      .mockResolvedValue(mockProduct);
-    jest
-      .spyOn(repository, "update")
-      .mockResolvedValue({ affected: 1, raw: {}, generatedMaps: []});
-    const product = await service.remove(mockProduct.id);
-    const expectedResult = {
-      productId: mockProduct.id,
-      status: 200,
-      error: '',
-    };
-    expect(product).toEqual(expectedResult);
-    expect(repository.update).toHaveBeenCalledWith(mockProduct.id, { isArchived: true});
+    await service.remove(mockProducts[0].id);
+    const result = await service.findOne(mockProducts[0].id);
+    const queryResult = await repository.find({where: {id: mockProducts[0].id, isArchived: false}});
+    expect(queryResult.length).toEqual(0);
   });
 
   it('should decrease stock', async () => {
-    const mockProduct = mockData[0];
-    jest
-      .spyOn(repository, "findOne")
-      .mockResolvedValue(mockProduct);
-    jest
-      .spyOn(repository, "save")
-      .mockResolvedValue(mockProduct);
-    const product = await service.decreaseStock({id: mockProduct.id, quantity: 1});
-    const expectedResult = {
-      productId: mockProduct.id,
-      status: 200,
-      error: '',
-    };
-    expect(product).toEqual(expectedResult);
-    expect(repository.save).toHaveBeenCalledWith(mockProduct);
+    await service.decreaseStock({id: mockProducts[0].id, quantity: 1});
+    const queryResult = await repository.findOne({where: {id: mockProducts[0].id}});
+    expect(queryResult.stock).toEqual(mockProducts[0].stock - 1);
   });
 });

@@ -75,14 +75,24 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: UpdateProductDto): Promise<UpdateProductResponse> {
     try {
-      const updatedUser = await this.productRepository.update(id, updateProductDto);
-      if(updatedUser.affected === 0) {
+      const product = await this.productRepository.findOne({
+        where: {
+          id: id,
+        }
+      })
+      if(!product || product.id !== id) {
         return {
           productId: id,
           status: HttpStatus.NOT_FOUND,
           error: `Product with id ${id} not found`,
         }
       }
+      product.name = updateProductDto.name;
+      product.description = updateProductDto.description;
+      product.price = updateProductDto.price;
+      product.stock = updateProductDto.stock;
+      product.updatedAt = new Date();
+      await this.productRepository.save(product);
     } catch (e) {
       return {
         productId: id,

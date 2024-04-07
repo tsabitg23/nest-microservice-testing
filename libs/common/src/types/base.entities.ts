@@ -23,5 +23,9 @@ export abstract class BaseEntityDto {
 
   @ApiProperty({ example: new Date().toISOString() })
   @IsDateString()
+  @Column({
+    type: 'timestamp with time zone',
+    default: null
+  })
   updatedAt: Date;
 }

@@ -9,7 +9,8 @@ export function createRandomData(): ProductEntity {
     mockProduct.price = +faker.commerce.price({min: 1, max: 1000});
     mockProduct.stock = faker.number.int(100);
     mockProduct.createdAt = new Date();
-    mockProduct.updatedAt = new Date();
+    mockProduct.updatedAt = null;
+    mockProduct.isArchived = false;
     return mockProduct;
 }
 
