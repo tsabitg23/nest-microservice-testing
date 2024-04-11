@@ -39,7 +39,7 @@ $ cd apps/api-gateway && make server
 docker compose up -d 
 ```
 
-### Run test
+### Run unit test
 First set your test db config by changing `.env.test` in each apps. Then run
 
 ```bash
@@ -64,3 +64,14 @@ $ yarn run proto:generate
 # For golang
 $ cd apps/api-gateway && maker proto
 ```
+
+### Features
+- Monorepo microservices with nest and GRPC transport
+- API gateway with Go
+- API documentation with Swagger
+- Simple Authorization 
+    - Role admin for every endpoint
+    - Role sales only for order endpoint
+- Rate limiter with  ([gin-rate-limit](https://github.com/JGLTechnologies/gin-rate-limit))
+- Run with docker compose
+- Unit Testing with NestJS Jest
