@@ -40,6 +40,8 @@ docker compose up -d
 ```
 
 ### Run test
+First set your test db config by changing `.env.test` in each apps. Then run
+
 ```bash
 $ yarn test
 ```

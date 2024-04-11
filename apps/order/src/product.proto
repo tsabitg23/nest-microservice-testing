@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "/apps/api-gateway/pkg/product/pb";
+
+service ProductService {
+  rpc FindOneProduct(FindOneProductDto) returns (FindOneProductResponse);
+  rpc FindAllProducts(Empty) returns (FindAllProductsResponse);
+  rpc CreateProduct(CreateProductDto) returns (CreateProductResponse);
+  rpc UpdateProduct(UpdateProductDto) returns (UpdateProductResponse);
+  rpc DeleteProduct(FindOneProductDto) returns (DeleteProductResponse);
+  rpc DecreaseStock(DecreaseProductDto) returns (DecreaseProductResponse);
+}
+
+message Empty {}
+
+message FindOneProductDto {
+  string id = 1;
+}
+
+message FindOneProductResponse {
+  Product data = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
+message FindAllProductsResponse {
+  repeated Product data = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
+message CreateProductDto {
+  string name = 1;
+  string description = 2;
+  float price = 3;
+  int32 stock = 4;
+}
+
+message CreateProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
+message UpdateProductDto {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+  int32 stock = 5;
+}
+
+message UpdateProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
+message DecreaseProductDto {
+  string id = 1;
+  int32 quantity = 2;
+}
+
+message DecreaseProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
+}
+
+message DeleteProductResponse {
+  string productId = 1;
+  int64 status = 2;
+  string error = 3;
+
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  float price = 4;
+  int32 stock = 5;
+  bool isArchived = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
